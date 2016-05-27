@@ -1,12 +1,11 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 import codecs
 import requests
-import json
 import re
 import time
 import settings
 from datetime import datetime
-
+from random import randint
 from bs4 import *
 def id_from_url(url):
     return url.split("?")[0][1:]
@@ -33,7 +32,7 @@ def get_all_friends(idlink,keep_to_visit=False):
         fsoup = BeautifulSoup(f.content,'html5lib') 
         source = fsoup.find('title').string
         add_user(idlink,source)
-        for friend in fsoup.find_all('a',{"class":re.compile('(cc)|(cf)|(bo)|(bl)')}):
+        for friend in fsoup.find_all('a',{"class":re.compile('(cc)|(bp)|(cf)|(bo)')}):
             if "profile.php" not in friend.attrs['href']:
                 if keep_to_visit:
                     to_visit+=[id_from_url(friend.attrs['href'])]
@@ -42,7 +41,7 @@ def get_all_friends(idlink,keep_to_visit=False):
                 print(friend.encode('utf-8'))
 
         next_url = fsoup.find('div',id="m_more_friends")
-        
+                       
         if next_url:
             next_url = next_url.find('a').attrs['href']
             next_url ='https://m.facebook.com{}'.format(next_url)
